@@ -6,6 +6,7 @@ import { SimpleLogger } from 'mk-simple-logger';
  * @param level {string} the error level [warn| error | critical]
  */
 export function errorLogger(logger: any, error: any, level: string = "error") {
+  try{
   switch (typeof error) {
     case "string":
       logger[level](error);
@@ -23,5 +24,8 @@ export function errorLogger(logger: any, error: any, level: string = "error") {
       }
       logger[level](JSON.stringify(error, null, 2))
       break;
+  }}catch(err){
+    console.log(error);
+    
   }
 }

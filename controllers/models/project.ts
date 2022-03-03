@@ -59,3 +59,40 @@ export async function createProyect(request: Request, response: Response) {
   }
   response.status(status).json(sendResponse);
 }
+
+
+export async function deleteProject(request: Request, response: Response){
+  const LOG : SimpleLogger = new SimpleLogger("DEL_PROJECT");
+  const PRID : string = request.params.id;
+  let sendResp : ServerResponse = {
+    status : "error",
+    message: "",
+    code: 400
+  }
+  let status = 400;
+  try{
+    if(!PRID){
+      LOG.warn("Project ID not found in request");
+      throw "Project ID not found in request";
+    }
+    let project = await ProjectDao.destroy({where:{
+      PRID
+    }});
+    sendResp = {
+      status: "ok",
+      code: 202,
+      message: "deleted"
+    }
+    status = 202;
+    LOG.info("Deleted {PRID} Total: {project}", {PRID, project});
+  }catch(err){
+    errorLogger(LOG,err);
+    sendResp = {
+      status : "error",
+      message: (String)(typeof err != "object" ? err: JSON.stringify(err)),
+      code: status
+    }
+  }
+  response.status(status).json(sendResp);
+}
+

@@ -4,7 +4,7 @@ import { Sequelize } from "sequelize";
 const logger = new SimpleLogger("ORM");
 let database = new Sequelize({
   dialect: "sqlite",
-  logging: (...msg) => logger.info(msg[0]),
+  logging: (...msg) =>{ try{logger.info(msg[0])}catch(err){}},
   storage: process.env.DB_PATH || "./database.sqlite",
 });
 
