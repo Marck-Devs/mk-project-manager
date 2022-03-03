@@ -27,7 +27,7 @@ interface ServerResponse{
  * @param request {Request}
  * @param response {Response}
  */
-export function createProyect(request: Request, response: Response) {
+export async function createProyect(request: Request, response: Response) {
   const LOG : SimpleLogger = new SimpleLogger("CRE_PROJECT")
   const REQUEST_DATA = request.body;
   let sendResponse: ServerResponse = {
@@ -45,12 +45,17 @@ export function createProyect(request: Request, response: Response) {
     REQUEST_DATA.PRID = v4();
     let project = ProjectDao.build(REQUEST_DATA);
     LOG.debug("Data to save: {d}", {d: JSON.stringify(REQUEST_DATA)});
-    project.save();
+    let pro = await project.save();
     LOG.info("Saved new project");
+    status = 201;
+    sendResponse.code = status;
+    sendResponse.message = pro.toJSON();
+    sendResponse.status = "OK";
   }catch(err){
     errorLogger(LOG, err);
     sendResponse.code = status;
     sendResponse.message = (String)(typeof err != "object" ? err: JSON.stringify(err));
     sendResponse.status = "error";
   }
+  response.status(status).json(sendResponse);
 }

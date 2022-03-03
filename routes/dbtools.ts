@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { db } from "../controllers";
+import { apiHandler, db } from "../controllers";
 
 let router : Router= Router();
 
-router.put("/setup", db.setup);
+router.put("/setup", apiHandler, db.setup);
 
 export {router as dbtools}
