@@ -1,17 +1,16 @@
 import { SimpleLogger } from 'mk-simple-logger';
-import { database } from './../../db/';
 import { Request, Response } from "express";
 import { errorLogger } from '../../helpers/error';
-import { Kanban, Project, Task } from '../../models';
+import { KanbanDao, ProjectDao, TaskDao } from '../../models';
 
 export default async function(req: Request, res: Response){
   try{
-    await Kanban.sync({force: true});
-    await Project.sync({force: true});
-    await Task.sync({force: true});
-
+    await KanbanDao.sync({force: true});
+    await ProjectDao.sync({force: true});
+    await TaskDao.sync({force: true});
+    res.status(201).send("OK");
   }catch(err: any){
     errorLogger(SimpleLogger.global(), err);
+    res.status(400).send("ERROR");
   }
-  res.status(201).send("OK");
 }

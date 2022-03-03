@@ -2,7 +2,7 @@ import { SimpleLogger } from 'mk-simple-logger';
 import { Response } from 'express';
 import { Request } from 'express';
 import { errorLogger } from '../../helpers/error';
-import { Project, ProjectDao } from '../../models';
+import { ProjectDao } from '../../models';
 import { v4 } from 'uuid';
 
 interface ServerResponse{

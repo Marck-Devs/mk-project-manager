@@ -1,4 +1,4 @@
-import { Request, RequestHandler, Response } from "express";
+import { Request, Response } from "express";
 
 export function apiHandler(req: Request, res: Response, next: any){
   const APIKEY = process.env.APIKEY || "Estafeta";
