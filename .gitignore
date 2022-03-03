@@ -4,3 +4,4 @@ workspace.json
 node_modules
 *.log
 *.sqlite
+*.code-workspace
