@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { database } from "../db";
 
-let Kanban = database.define("Kanban", {
+let KanbanDao = database.define("Kanban", {
   KAID: { type: DataTypes.TEXT, primaryKey: true},
   KANAME: {type: DataTypes.TEXT},
   KADESC: {type: DataTypes.TEXT},
@@ -9,4 +9,17 @@ let Kanban = database.define("Kanban", {
 })
 
 
-export {Kanban};
+export {KanbanDao};
+
+/**
+ * @property KAID the kanban's id
+ * @property KANAME the kanban's name
+ * @property KADESC the kanban's description
+ * @property KACOLS the kanban's cols
+ */
+export interface Kanban{
+  KAID: string
+  KANAME: string;
+  KADESC: string;
+  KACOLS: string;
+}
