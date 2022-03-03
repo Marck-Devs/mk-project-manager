@@ -13,16 +13,17 @@ interface ServerResponse{
 
 /**
  * Create a new project.
+ * @example
  * Request schema:
  * {
- * *PRNAM: string;             ==  the name of the project
- * ?PRDESC: string;            ==  the description of the project
- * ?PRCODE: string;            ==  the code of the project
- * ?PRHOURS: number;           ==  hours of the project
- * ?PRINITDATE: Date;          ==  the end date of the project
- * ?PRREALHOURS: number;       ==  the init date of the project
- * ?PRPRIORITY: string;        ==  the project's priority of the project
- * ?PRTAGS: string;            ==  the project's tags of the project
+ *    *PRNAM: string;           //  ==  the name of the project
+ *    ?PRDESC: string;          //  ==  the description of the project
+ *    ?PRCODE: string;          //  ==  the code of the project
+ *    ?PRHOURS: number;         //  ==  hours of the project
+ *    ?PRINITDATE: Date;        //  ==  the end date of the project
+ *    ?PRREALHOURS: number;     //  ==  the init date of the project
+ *    ?PRPRIORITY: string;      //  ==  the project's priority of the project
+ *    ?PRTAGS: string;          //  ==  the project's tags of the project
  * }
  * @param request {Request}
  * @param response {Response}
@@ -60,7 +61,12 @@ export async function createProyect(request: Request, response: Response) {
   response.status(status).json(sendResponse);
 }
 
-
+/**
+ * Delete a project
+ * url: .../project/:id
+ * @param request {Request}
+ * @param response {Response}
+ */
 export async function deleteProject(request: Request, response: Response){
   const LOG : SimpleLogger = new SimpleLogger("DEL_PROJECT");
   const PRID : string = request.params.id;
@@ -83,7 +89,17 @@ export async function deleteProject(request: Request, response: Response){
       code: 202,
       message: "deleted"
     }
+    if(project == 0){
+      status = 404;
+      LOG.warn("Project not found");
+      throw "not found";
+    }
     status = 202;
+    sendResp = {
+      status : "ok",
+      message: "updated",
+      code: status
+    }
     LOG.info("Deleted {PRID} Total: {project}", {PRID, project});
   }catch(err){
     errorLogger(LOG,err);
@@ -96,3 +112,59 @@ export async function deleteProject(request: Request, response: Response){
   response.status(status).json(sendResp);
 }
 
+/**
+ * Update project 
+ * url: ../project/:id 
+ * @example
+ * body:{
+ *  ?PRNAM: string;          //   ==  the name of the project
+ *  ?PRDESC: string;         //   ==  the description of the project
+ *  ?PRCODE: string;         //   ==  the code of the project
+ *  ?PRHOURS: number;        //   ==  hours of the project
+ *  ?PRINITDATE: DateTime;       //   ==  the end date of the project
+ *  ?PRREALHOURS: number;    //   ==  the init date of the project
+ *  ?PRPRIORITY: string;     //   ==  the project's priority of the project
+ *  ?PRTAGS: string;         //   ==  the project's tags of the project
+ * }
+ * @param request {Request}
+ * @param response {Response}
+ */
+export async function updateProject(request: Request, response: Response){
+  const LOG:SimpleLogger = new SimpleLogger("UPDATE_PROJECT");
+  const PRID = request.params.id;
+  const DATA = request.body;
+  let sendResp : ServerResponse = {
+    code: 400,
+    message: "",
+    status: "error"
+  };
+  let status = 400;
+  try{
+    if(!PRID){
+      LOG.critical("Project id not found in url");
+      throw "Project id not found in url";
+    }
+    if(!DATA){
+      LOG.warn("No body found");
+      throw "No body found";
+    }
+    let result : Array<number> = await ProjectDao.update(DATA, {
+      where: {
+        PRID
+      }
+    });
+    if(result.length === 0){
+      status = 404;
+      LOG.warn("Not found");
+      throw "Project not found";
+    }
+  }catch(error){
+    errorLogger(LOG, error);
+    sendResp = {
+      code: status,
+      message: (String)(typeof error != "object" ? error: JSON.stringify(error)),
+      status: "error"
+    }
+  }
+  response.status(status).json(sendResp);
+}

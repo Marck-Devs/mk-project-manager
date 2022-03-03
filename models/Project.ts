@@ -8,8 +8,8 @@ let ProjectDao = database.define("Project", {
   PRCODE: {type: DataTypes.TEXT},
   PRHOURS: {type: DataTypes.NUMBER},
   PRREALHOURS: {type: DataTypes.NUMBER},
-  PRENDDATE: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
-  PRINITDATE: {type: DataTypes.DATE},
+  PRINITDATE: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
+  PRENDDATE: {type: DataTypes.DATE},
   PRPRIORITY: {type: DataTypes.TEXT},
   PRTAGS: {type: DataTypes.TEXT}
 })
