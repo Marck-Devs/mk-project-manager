@@ -168,3 +168,10 @@ export async function updateProject(request: Request, response: Response){
   }
   response.status(status).json(sendResp);
 }
+
+
+export async function listProjects(request: Request, response: Response){
+  const LOG : SimpleLogger = new SimpleLogger("LS_PROJECT");
+  let data = await ProjectDao.findAll();
+  response.status(200).json(data);
+}
