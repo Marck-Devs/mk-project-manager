@@ -36,17 +36,7 @@ SimpleLogger.global().setName("APP");
 
 // ----[ ROUTES ]----
 app.use(routes);
-app.use("/*", (res, rep)=>{
-  rep.send(`
-  <html>
-    <body>
-    <h1> Hi!</h1>
-    <p>Thanks for your data! 😘</p>
-    <small>Now I have your IP. Thanks (retard)</small>
-    </body>
-    </html>
-  `)
-})
+
 
 // ----[ SERVER INIT ]----
 let server = app.listen(process.env.PORT || 8080, ()=>{
