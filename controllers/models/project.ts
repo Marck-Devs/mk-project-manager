@@ -206,6 +206,7 @@ export async function getProject(request: Request, response: Response) {
     if(!msg){
       LOG.error("No Project found");
       throw "Project not found";
+      status = 404;
     }
     status = 200;
     sendResp = {
@@ -222,4 +223,43 @@ export async function getProject(request: Request, response: Response) {
     }
   }
   response.status(status).json(sendResp);
+}
+
+export async function getFilterProject(request: Request ,response: Response){
+  const LOG : SimpleLogger = new SimpleLogger("G_FILTER_PROJECT");
+  const FILTER = request.body;
+  let sendRes: ServerResponse = {
+    code: 400,
+    message: "",
+    status: "error"
+  };
+  let status : number = 400;
+
+  try{
+    let data = await ProjectDao.findOne({
+      where: {
+        ...FILTER
+      }
+    });
+    let msg = data?.toJSON();
+    if(!msg){
+      LOG.error("No Project found");
+      throw "Project not found";
+      status = 404;
+    }
+    status = 200;
+    sendRes = {
+      code: status,
+      message: msg,
+      status: "ok"
+    }
+  }catch(error){
+    errorLogger(LOG, error);
+    sendRes = {
+      code: status,
+      message: (String)(typeof error != "object" ? error : JSON.stringify(error)),
+      status: "error"
+    }
+  }
+  response.status(status).json(sendRes);
 }
