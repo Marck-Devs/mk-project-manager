@@ -263,3 +263,32 @@ export async function getFilterProject(request: Request ,response: Response){
   }
   response.status(status).json(sendRes);
 }
+
+export async function getFilterListProject(req: Request, res: Response){
+  const LOG : SimpleLogger = new SimpleLogger("G_FILTER_PROJECT");
+  const FILTER = req.body;
+  let sendRes: ServerResponse = {
+    code: 400,
+    message: "",
+    status: "error"
+  };
+  let status : number = 400;
+
+  try{
+    let data = await ProjectDao.findAll({
+      where: {
+        ...FILTER
+      }
+    });
+    status = 200;
+    res.status(status).json(data);
+  }catch(error){
+    errorLogger(LOG, error);
+    sendRes = {
+      code: status,
+      message: (String)(typeof error != "object" ? error : JSON.stringify(error)),
+      status: "error"
+    }
+    res.status(status).json(sendRes);
+  }
+}
