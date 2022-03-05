@@ -5,8 +5,8 @@ import { errorLogger } from "../../helpers/error";
 import { KanbanDao } from "../../models";
 import { ServerResponse } from "./project";
 
-export async function get(req: Request, res: Response){
-  const LOG : SimpleLogger = new SimpleLogger("GET_KANBAN");
+export async function get(req: Request, res: Response) {
+  const LOG: SimpleLogger = new SimpleLogger("GET_KANBAN");
   const KAID = req.params.id;
   let sendResp: ServerResponse = {
     code: 400,
@@ -14,8 +14,8 @@ export async function get(req: Request, res: Response){
     status: "error"
   };
   let status: number = 400;
-  try{
-    if(!KAID){
+  try {
+    if (!KAID) {
       LOG.error("No Kanban id found");
       throw "No Kanban id found";
     }
@@ -23,7 +23,7 @@ export async function get(req: Request, res: Response){
       where: { KAID }
     });
     let msg = data?.toJSON();
-    if(!msg){
+    if (!msg) {
       LOG.error("No Kanban found");
       throw "Kanban not found";
       status = 404;
@@ -34,7 +34,7 @@ export async function get(req: Request, res: Response){
       message: msg,
       status: "ok"
     }
-  }catch(error){
+  } catch (error) {
     errorLogger(LOG, error);
     sendResp = {
       code: status,
@@ -135,7 +135,51 @@ export async function del(request: Request, response: Response) {
   response.status(status).json(sendResp);
 }
 
-export async function list(req:Request, res: Response){
+export async function list(req: Request, res: Response) {
   let data = await KanbanDao.findAll();
   res.status(200).json(data);
+}
+
+export async function update(req: Request, res: Response) {
+  const LOG: SimpleLogger = new SimpleLogger("UP_KANBA");
+  const KAID = req.params.id;
+  const DATA = req.body;
+  let sendResp: ServerResponse = {
+    status: "error",
+    message: "",
+    code: 400
+  }
+  let status = 400;
+  try {
+    if (!KAID) {
+      LOG.error("Not found kanba id");
+      throw "Not found kanba id";
+    }
+    let afect: Array<number> = await KanbanDao.update(DATA, {
+      where: { KAID }
+    });
+    if (afect.length == 0) {
+      status = 404;
+      sendResp = {
+        status: "error",
+        code: status,
+        message: "Not found"
+      }
+      throw "Not found"
+    }
+    status = 202;
+    sendResp = {
+      status: "ok",
+      code: status,
+      message: "updated"
+    }
+  } catch (error) {
+    errorLogger(LOG, error);
+    sendResp = {
+      code: status,
+      message: (String)(typeof error != "object" ? error : JSON.stringify(error)),
+      status: "error"
+    }
+  }
+  res.status(status).json(sendResp);
 }
