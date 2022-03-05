@@ -5,7 +5,7 @@ import { errorLogger } from '../../helpers/error';
 import { ProjectDao } from '../../models';
 import { v4 } from 'uuid';
 
-interface ServerResponse {
+export interface ServerResponse {
   status: string;
   code: number;
   message: string;
